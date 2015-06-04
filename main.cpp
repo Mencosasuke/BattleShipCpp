@@ -1,43 +1,98 @@
 #include <iostream>
 #include <windows.h>
+#include <time.h>
 
 #include "Nodo.h"
 
 using namespace std;
 
-const int IDENTIFICADOR_VACIO = 0;				// Espacio vacío ( )
+const int IDENTIFICADOR_VACIO = 0;				// Espacio vacío ( _ )
 const int IDENTIFICADOR_NAVIO = 1;				// Navíos intactos ( o )
 const int IDENTIFICADOR_NAVIO_DESTRUIDO = 2;	// Navíos destruidos ( x )
 const int IDENTIFICADOR_DISPARO_FALLADO = 3;	// Disparos fallados ( - )
 
 void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	
+	bool finJuego = false;
+	int contador;
+	int aciertosJugador = 0;
+	int aciertosRival = 0;
+	int cordX = 0;
+	int cordY = 0;
+	
+	int turnos = (nf * nc) / 4;
+	
+	int cordNaveEnemigoX [turnos];
+	int cordNaveEnemigoY [turnos];
+	int cordDispEnemigoX [turnos];
+	int cordDispEnemigoY [turnos];
+	
+	// Valida que la seleccion de coordenadas (para enemigo o jugador) no haya sido elegida
+	bool seleccionValida = false;
+	
 	Nodo *auxV = (*cabecera)->abajo;
 	Nodo *auxH = auxV->derecha;
 	
-	int contador = 1;
-	while(auxV != NULL){
-		// Imprime la matriz original sin mostrar ubicacion de barcos ni disparos.
-		while(auxH != NULL){
-			if(auxH->valor == IDENTIFICADOR_VACIO){
-				cout<<" * ";
+	srand(time(0));
+	
+	// Se eligen las coordenadas de los barcos y los disparos enemigos
+	for( int i = 0; i < turnos; i++){
+		// Seleccion de coordenadas de barcos enemigos
+		do{
+			cordNaveEnemigoX[i] = rand() % nc + 1;
+			cordNaveEnemigoY[i] = rand() % nf + 1;
+			for(int j = 0; j < turnos; j++){
+				if( j != i && (cordNaveEnemigoX[j] == cordNaveEnemigoX[i] && cordNaveEnemigoY[j] == cordNaveEnemigoY[i])){
+					seleccionValida = false;
+					break;
+				}
+				seleccionValida = true;
 			}
-			auxH = auxH->derecha;
-			Sleep(100);
-		}
-		if(contador == nf){
-			cout<<endl<<endl;
-			for(int i = 0; i < nc; i++){
-				cout<<"---";
+		}while(!seleccionValida);
+		seleccionValida = false;
+		
+		// Seleccion de coordenadas de disparos enemigos
+		do{
+			cordNaveEnemigoX[i] = rand() % nc + 1;
+			cordNaveEnemigoY[i] = rand() % nf + 1;
+			for(int j = 0; j < turnos; j++){
+				if( j != i && (cordNaveEnemigoX[j] == cordNaveEnemigoX[i] && cordNaveEnemigoY[j] == cordNaveEnemigoY[i])){
+					seleccionValida = false;
+					break;
+				}
+				seleccionValida = true;
 			}
-		}
-		cout<<endl<<endl;
-		auxV = auxV->abajo;
-		if(auxV != NULL){
-			auxH = auxV->derecha;
-			contador++;
-		}
+		}while(!seleccionValida);
+		seleccionValida = false;
 	}
+	
+	do{
+		system("cls");
+		contador = 1;
+		while(auxV != NULL){
+			// Imprime la matriz original sin mostrar ubicacion de barcos ni disparos.
+			while(auxH != NULL){
+				if(auxH->valor == IDENTIFICADOR_VACIO){
+					cout<<" \xDC ";
+				}
+				auxH = auxH->derecha;
+				Sleep(100);
+			}
+			if(contador == nf){
+				cout<<endl<<endl;
+				for(int i = 0; i < nc; i++){
+					cout<<"---";
+				}
+			}
+			cout<<endl<<endl;
+			auxV = auxV->abajo;
+			if(auxV != NULL){
+				auxH = auxV->derecha;
+				contador++;
+			}
+		}
+		finJuego = true;
+	}while(!finJuego);
 	
 	// Limpia el esapcio en memoria reservado para la matriz en memoria
 	
