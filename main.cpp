@@ -13,12 +13,10 @@ const int IDENTIFICADOR_DISPARO_FALLADO = 3;	// Disparos fallados ( - )
 
 void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	
-	bool finJuego = false;
-	int contador;
+	// Variables necesarias para el control del juego
 	int aciertosJugador = 0;
 	int aciertosRival = 0;
-	int cordX = 0;
-	int cordY = 0;
+	int contador;
 	
 	int turnos = (nf * nc) / 4;
 	
@@ -30,14 +28,12 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	// Valida que la seleccion de coordenadas (para enemigo o jugador) no haya sido elegida
 	bool seleccionValida = false;
 	
-	Nodo *auxV = (*cabecera)->abajo;
-	Nodo *auxH = auxV->derecha;
-	
 	srand(time(0));
 	
 	// Se eligen las coordenadas de los barcos y los disparos enemigos
 	for( int i = 0; i < turnos; i++){
-		// Seleccion de coordenadas de barcos enemigos
+		
+		// Seleccion de coordenadas de barcos enemigo
 		do{
 			cordNaveEnemigoX[i] = rand() % nc + 1;
 			cordNaveEnemigoY[i] = rand() % nf + 1;
@@ -51,12 +47,12 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		}while(!seleccionValida);
 		seleccionValida = false;
 		
-		// Seleccion de coordenadas de disparos enemigos
+		// Seleccion de coordenadas de disparos enemigo
 		do{
-			cordNaveEnemigoX[i] = rand() % nc + 1;
-			cordNaveEnemigoY[i] = rand() % nf + 1;
+			cordDispEnemigoX[i] = rand() % nc + 1;
+			cordDispEnemigoY[i] = rand() % nf + (nf + 1);
 			for(int j = 0; j < turnos; j++){
-				if( j != i && (cordNaveEnemigoX[j] == cordNaveEnemigoX[i] && cordNaveEnemigoY[j] == cordNaveEnemigoY[i])){
+				if( j != i && (cordDispEnemigoX[j] == cordDispEnemigoX[i] && cordDispEnemigoY[j] == cordDispEnemigoY[i])){
 					seleccionValida = false;
 					break;
 				}
@@ -66,33 +62,267 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		seleccionValida = false;
 	}
 	
-	do{
-		system("cls");
-		contador = 1;
-		while(auxV != NULL){
-			// Imprime la matriz original sin mostrar ubicacion de barcos ni disparos.
-			while(auxH != NULL){
-				if(auxH->valor == IDENTIFICADOR_VACIO){
-					cout<<" \xDC ";
+	cout<<"COORDENADAS NAVES RIVAL: "<<endl;
+	for( int i = 0; i < turnos; i++){
+		cout<<cordNaveEnemigoY[i]<<","<<cordNaveEnemigoX[i]<<endl;
+	}
+	cout<<"COORDENADAS DISPAROS RIVAL: "<<endl;
+	for( int i = 0; i < turnos; i++){
+		cout<<cordDispEnemigoY[i]<<","<<cordDispEnemigoX[i]<<endl;
+	}
+	
+	// Se eligen las coordenadas de los barcos y los disparos del jugador
+	
+	int cordNaveJugadorX [turnos];
+	int cordNaveJugadorY [turnos];
+	int cordDispJugadorX [turnos];
+	int cordDispJugadorY [turnos];
+	
+	int cordX = 0;
+	int cordY = 0;
+	
+	//system("cls");
+	cout<<"*************** INGRESO COORDENADAS DE BARCOS JUGADOR ***************"<<endl<<endl;
+
+	for( int i = 0; i < turnos; i++){
+		
+		// Seleccion de coordenadas de barcos jugador
+		do{
+			// Selección de coordenada X
+			do{
+				cout<<"Ingrese coordenada X: [  ]\b\b\b";
+				cin>>cordX;
+				cin.ignore();
+				if(cordX > 0 && cordX <= nc){
+					seleccionValida = true;
+				}else{
+					cout<<"Coordenada fuera de rango. Intente de nuevo."<<endl;
 				}
-				auxH = auxH->derecha;
-				Sleep(100);
-			}
-			if(contador == nf){
-				cout<<endl<<endl;
-				for(int i = 0; i < nc; i++){
-					cout<<"---";
+			}while(!seleccionValida);
+			seleccionValida = false;
+			
+			// Selección de coordenada Y
+			do{
+				cout<<"Ingrese coordenada Y: [  ]\b\b\b";
+				cin>>cordY;
+				cin.ignore();
+				if(cordY > nf && cordY <= (nf*2)){
+					seleccionValida = true;
+					cordY += nf;
+				}else{
+					cout<<"Coordenada fuera de rango. Intente de nuevo."<<endl;
 				}
+			}while(!seleccionValida);
+			seleccionValida = false;
+			
+			for(int j = 0; j < turnos; j++){
+				if( j != i && (cordNaveJugadorX[j] == cordNaveJugadorX[i] && cordNaveJugadorY[j] == cordNaveJugadorY[i])){
+					seleccionValida = false;
+					cout<<endl<<endl<<"Esta coordenada ya existe. Elija otra por favor."<<endl<<endl;
+					break;
+				}
+				seleccionValida = true;
 			}
+		}while(!seleccionValida);		
+	}
+	
+	system("cls");
+	cout<<"*************** INGRESO COORDENADAS DE ATAQUE A OPONENTE ***************"<<endl<<endl;
+
+	for( int i = 0; i < turnos; i++){
+		// Seleccion de coordenadas de disparos jugador
+		do{
+			// Selección de coordenada X
+			do{
+				cout<<"Ingrese coordenada X: [  ]\b\b\b";
+				cin>>cordX;
+				cin.ignore();
+				if(cordX > 0 && cordX <= nc){
+					seleccionValida = true;
+				}else{
+					cout<<"Coordenada fuera de rango. Intente de nuevo."<<endl;
+				}
+			}while(!seleccionValida);
+			seleccionValida = false;
+			
+			// Selección de coordenada Y
+			do{
+				cout<<"Ingrese coordenada Y: [  ]\b\b\b";
+				cin>>cordY;
+				cin.ignore();
+				if(cordY > 0 && cordY <= nf){
+					seleccionValida = true;
+				}else{
+					cout<<"Coordenada fuera de rango. Intente de nuevo."<<endl;
+				}
+			}while(!seleccionValida);
+			seleccionValida = false;
+			
+			for(int j = 0; j < turnos; j++){
+				if( j != i && (cordNaveJugadorX[j] == cordNaveJugadorX[i] && cordNaveJugadorY[j] == cordNaveJugadorY[i])){
+					seleccionValida = false;
+					cout<<endl<<endl<<"Esta coordenada ya existe. Elija otra por favor."<<endl<<endl;
+					break;
+				}
+				seleccionValida = true;
+			}
+		}while(!seleccionValida);
+	}
+	
+	system("cls");
+	
+	// Imprime el tablero del juego.
+	system("cls");
+	Nodo *auxV = (*cabecera);
+	Nodo *auxH = auxV;
+	
+	contador = 1;
+	while(auxV != NULL){
+		
+		while(auxH != NULL){
+			//if(auxH->valor == IDENTIFICADOR_VACIO){
+			if(auxH->cabecera){
+				cout<<" "<<auxH->valor<<" ";
+			}else{
+				//cout<<" \xDC ";
+				cout<<" "<<auxH->y<<","<<auxH->x<<" ";
+			}
+				//cout<<" "<<auxH->y<<","<<auxH->x<<" ";
+				//cout<<" "<<auxH->valor<<" ";
+			//}
+			auxH = auxH->derecha;
+			//Sleep(100);
+		}
+		if(contador == nf){
 			cout<<endl<<endl;
-			auxV = auxV->abajo;
-			if(auxV != NULL){
-				auxH = auxV->derecha;
-				contador++;
+			for(int i = 0; i < nc; i++){
+				cout<<"---";
 			}
 		}
-		finJuego = true;
-	}while(!finJuego);
+		cout<<endl<<endl;
+		auxV = auxV->abajo;
+		auxH = auxV;
+		contador++;
+	}
+	
+	system("pause");
+	
+	// Inicia con el recorrido de la matriz para cambiar el estado a los nodos coordenada seleccionados.
+	
+	auxV = (*cabecera)->abajo;
+	auxH = auxV->derecha;
+	
+	contador = 1;
+	while(auxV != NULL){
+		// Cambia el valor de los nodos para mostrar las SOLO LAS NAVES
+		while(auxH != NULL){
+			// Camia el valor para la nave enemiga o del jugador
+			for( int i = 0; i < turnos; i++){
+				if(cordNaveEnemigoX[i] == auxH->x && cordNaveEnemigoY[i] == auxH->y){
+					auxH->valor = IDENTIFICADOR_NAVIO;
+				}else if(cordNaveJugadorX[i] == auxH->x && cordNaveJugadorY[i] == auxH->y){
+					auxH->valor = IDENTIFICADOR_NAVIO;
+				}
+			}
+			auxH = auxH->derecha;
+			//Sleep(100);
+		}
+		/*if(contador == nf){
+			cout<<endl<<endl;
+			for(int i = 0; i < nc; i++){
+				cout<<"---";
+			}
+		}
+		cout<<endl<<endl;*/
+		auxV = auxV->abajo;
+		if(auxV != NULL){
+			auxH = auxV->derecha;
+			//contador++;
+		}
+	}
+	
+	/*auxV = (*cabecera)->abajo;
+	auxH = auxV->derecha;
+	
+	contador = 1;
+	while(auxV != NULL){
+		// Cambia el valor de los nodos para mostrar los DISPAROS
+		while(auxH != NULL){
+			// Camia el valor para la nave enemiga o del jugador si el disparo acerto o no, e imprime los disparos es que acertaron
+			// Hace la suma de disparos acertados por cada jugador.
+			for( int i = 0; i < turnos; i++){
+				if(cordDispEnemigoX[i] == auxH->x && cordDispEnemigoY[i] == auxH->y){
+					if(auxH->valor = IDENTIFICADOR_NAVIO){
+						auxH->valor = IDENTIFICADOR_NAVIO_DESTRUIDO;
+						aciertosRival++;
+					}else{
+						auxH->valor = IDENTIFICADOR_DISPARO_FALLADO;
+					}
+				}else if(cordDispJugadorX[i] == auxH->x && cordDispJugadorY[i] == auxH->y){
+					if(auxH->valor = IDENTIFICADOR_NAVIO){
+						auxH->valor = IDENTIFICADOR_NAVIO_DESTRUIDO;
+						aciertosJugador++;
+					}else{
+						auxH->valor = IDENTIFICADOR_DISPARO_FALLADO;
+					}
+				}
+			}
+			auxH = auxH->derecha;
+			//Sleep(100);
+		}
+		auxV = auxV->abajo;
+		if(auxV != NULL){
+			auxH = auxV->derecha;
+			//contador++;
+		}
+	}*/
+	
+	auxV = (*cabecera);
+	auxH = auxV;
+	
+	contador = 1;
+	while(auxV != NULL){
+		
+		while(auxH != NULL){
+			//if(auxH->valor == IDENTIFICADOR_VACIO){
+			if(auxH->cabecera){
+				cout<<" "<<auxH->valor<<" ";
+			}else if(auxH->valor == IDENTIFICADOR_VACIO){
+				cout<<" \xDC ";
+			}else if(auxH->valor == IDENTIFICADOR_NAVIO){
+				cout<<" o ";
+			}else if(auxH->valor == IDENTIFICADOR_NAVIO_DESTRUIDO){
+				cout<<" x ";
+			}else if(auxH->valor == IDENTIFICADOR_DISPARO_FALLADO){
+				cout<<" - ";
+			}
+				//cout<<" "<<auxH->y<<","<<auxH->x<<" ";
+				//cout<<" "<<auxH->valor<<" ";
+			//}
+			auxH = auxH->derecha;
+			//Sleep(100);
+		}
+		if(contador == nf){
+			cout<<endl<<endl;
+			for(int i = 0; i < nc; i++){
+				cout<<"---";
+			}
+		}
+		cout<<endl<<endl;
+		auxV = auxV->abajo;
+		auxH = auxV;
+		contador++;
+	}
+	
+	if(aciertosJugador > aciertosRival){
+		cout<<endl<<endl<<"******* JUGADOR HA GANADO *******";
+	}else if(aciertosJugador < aciertosRival){
+		cout<<endl<<endl<<"******* JUGADOR HA PERDIDO *******";
+	}else{
+		cout<<endl<<endl<<"******* ES UN EMPATE *******";
+	}
+	
+	system("pause");
 	
 	// Limpia el esapcio en memoria reservado para la matriz en memoria
 	
@@ -124,6 +354,7 @@ void crearLista(int nf, int nc){
 	for(int i = 0; i < nc; i++){
 		Nodo *p = new Nodo();
 		p->valor = i + 1;
+		p->cabecera = true;
 		
 		if(cabecera->derecha == NULL){
 			p->izquierda = cabecera;
@@ -139,6 +370,7 @@ void crearLista(int nf, int nc){
 	for(int i = 0; i < nf * 2; i++){
 		Nodo *p = new Nodo();
 		p->valor = i + 1;
+		p->cabecera = true;
 		
 		if(cabecera->abajo == NULL){
 			p->arriba = cabecera;
@@ -150,34 +382,24 @@ void crearLista(int nf, int nc){
 			ultimoV = ultimoV->abajo;
 		}
 	}
-	
-	/*Nodo *aux = cabecera->derecha;
-	while(aux != NULL){
-		if(aux->derecha != NULL){
-			cout<<" "<<aux->izquierda->valor<<" "<<aux->valor<<" "<<aux->derecha->valor<<" || ";
-		}
-		aux = aux->derecha;
-	}
-	cout<<endl<<endl;
-	aux = cabecera->abajo;
-	while(aux != NULL){
-		if(aux->abajo != NULL){
-			cout<<" "<<aux->arriba->valor<<" "<<aux->valor<<" "<<aux->abajo->valor<<" || ";	
-		}
-		aux = aux->abajo;
-	}*/
 
 	Nodo *auxH = cabecera->derecha;
 	Nodo *auxV = cabecera->abajo;
 	Nodo *auxUltimoH = cabecera->derecha;
 	Nodo *auxUltimoV = cabecera->abajo;
-	//int x = 1;
+	
+	int x = 1;
+	int y = 1;
+	//int h = 1;
 	// Inserta nuevos nodos en toda la matriz
 	while(auxV != NULL){
 		while(auxH != NULL){
 			Nodo *q = new Nodo();
-			//q->valor = x;
-			//x++;
+			//q->valor = h;
+			//h++;
+			q->x = x;
+			q->y = y;
+			x++;
 			
 			q->izquierda = auxUltimoV;
 			auxUltimoV->derecha = q;
@@ -189,48 +411,17 @@ void crearLista(int nf, int nc){
 			auxUltimoV = q;
 			
 			auxH = auxH->derecha;
-			//cout<<q->arriba->valor<<"-"<<q->valor<<"-"<<"||";
-			//cout<<q->izquierda->valor<<"-"<<q->valor<<"-"<<"||";
 		}
 		auxUltimoH = auxV->derecha;
 		auxH = cabecera->derecha;
 		auxV = auxV->abajo;
 		auxUltimoV = auxV;
-		//cout<<endl;
+		y++;
+		x = 1;
 	}
 	
 	comenzarJuego(&cabecera, nf, nc);
 	
-	/*auxV = cabecera->abajo;
-	auxH = auxV->derecha;
-	
-	while(auxV != NULL){
-		while(auxH != NULL){
-			/*if(auxH->arriba != NULL){
-				cout<<auxH->arriba->valor<<"^";
-			}
-			if(auxH->abajo != NULL){
-				cout<<auxH->abajo->valor<<"v";
-			}
-			cout<<" "<<auxH->valor<<"  ";
-			/*if(auxH->izquierda != NULL){
-				cout<<"<"<<auxH->izquierda->valor;
-			}
-			if(auxH->derecha != NULL){
-				cout<<">"<<auxH->derecha->valor;
-			}
-			cout<<"\t";
-			auxH = auxH->derecha;
-		}
-		cout<<endl<<endl;
-		auxV = auxV->abajo;
-		if(auxV != NULL){
-			auxH = auxV->derecha;	
-		}
-		
-	}
-	
-	system("pause");*/
 }
 
 int main(int argc, char** argv) {
