@@ -116,12 +116,16 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 			seleccionValida = false;
 			
 			for(int j = 0; j < turnos; j++){
-				if( j != i && (cordNaveJugadorX[j] == cordNaveJugadorX[i] && cordNaveJugadorY[j] == cordNaveJugadorY[i])){
+				if( j != i && (cordNaveJugadorX[j] == cordX && cordNaveJugadorY[j] == cordY)){
 					seleccionValida = false;
 					cout<<endl<<endl<<"Esta coordenada ya existe. Elija otra por favor."<<endl<<endl;
 					break;
 				}
 				seleccionValida = true;
+			}
+			if(seleccionValida){
+				cordNaveJugadorX[i] = cordX;
+				cordNaveJugadorY[i] = cordY;
 			}
 		}while(!seleccionValida);		
 	}
@@ -166,6 +170,10 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 				}
 				seleccionValida = true;
 			}
+			if(seleccionValida){
+				cordNaveJugadorX[i] = cordX;
+				cordNaveJugadorY[i] = cordY;
+			}
 		}while(!seleccionValida);
 	}
 	
@@ -176,7 +184,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	Nodo *auxV = (*cabecera);
 	Nodo *auxH = auxV;
 	
-	contador = 1;
+	contador = 0;
 	while(auxV != NULL){
 		
 		while(auxH != NULL){
@@ -212,7 +220,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	auxV = (*cabecera)->abajo;
 	auxH = auxV->derecha;
 	
-	contador = 1;
+	contador = 0;
 	while(auxV != NULL){
 		// Cambia el valor de los nodos para mostrar las SOLO LAS NAVES
 		while(auxH != NULL){
@@ -220,31 +228,22 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 			for( int i = 0; i < turnos; i++){
 				if(cordNaveEnemigoX[i] == auxH->x && cordNaveEnemigoY[i] == auxH->y){
 					auxH->valor = IDENTIFICADOR_NAVIO;
-				}else if(cordNaveJugadorX[i] == auxH->x && cordNaveJugadorY[i] == auxH->y){
+				}else if(cordNaveJugadorX[i] == auxH->x && (cordNaveJugadorY[i]+nf) == auxH->y){
 					auxH->valor = IDENTIFICADOR_NAVIO;
 				}
 			}
 			auxH = auxH->derecha;
-			//Sleep(100);
 		}
-		/*if(contador == nf){
-			cout<<endl<<endl;
-			for(int i = 0; i < nc; i++){
-				cout<<"---";
-			}
-		}
-		cout<<endl<<endl;*/
 		auxV = auxV->abajo;
 		if(auxV != NULL){
 			auxH = auxV->derecha;
-			//contador++;
 		}
 	}
 	
-	/*auxV = (*cabecera)->abajo;
+	auxV = (*cabecera)->abajo;
 	auxH = auxV->derecha;
 	
-	contador = 1;
+	contador = 0;
 	while(auxV != NULL){
 		// Cambia el valor de los nodos para mostrar los DISPAROS
 		while(auxH != NULL){
@@ -268,19 +267,17 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 				}
 			}
 			auxH = auxH->derecha;
-			//Sleep(100);
 		}
 		auxV = auxV->abajo;
 		if(auxV != NULL){
 			auxH = auxV->derecha;
-			//contador++;
 		}
-	}*/
+	}
 	
 	auxV = (*cabecera);
 	auxH = auxV;
 	
-	contador = 1;
+	contador = 0;
 	while(auxV != NULL){
 		
 		while(auxH != NULL){
