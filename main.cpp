@@ -5,24 +5,60 @@
 
 using namespace std;
 
-void comenzarJuego(Nodo **cabecera){
+const int IDENTIFICADOR_VACIO = 0;				// Espacio vacío ( )
+const int IDENTIFICADOR_NAVIO = 1;				// Navíos intactos ( o )
+const int IDENTIFICADOR_NAVIO_DESTRUIDO = 2;	// Navíos destruidos ( x )
+const int IDENTIFICADOR_DISPARO_FALLADO = 3;	// Disparos fallados ( - )
+
+void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	
 	Nodo *auxV = (*cabecera)->abajo;
 	Nodo *auxH = auxV->derecha;
 	
+	int contador = 1;
 	while(auxV != NULL){
+		// Imprime la matriz original sin mostrar ubicacion de barcos ni disparos.
 		while(auxH != NULL){
-			cout<<" "<<auxH->valor<<"  ";
+			if(auxH->valor == IDENTIFICADOR_VACIO){
+				cout<<" * ";
+			}
 			auxH = auxH->derecha;
-			Sleep(500);
+			Sleep(100);
+		}
+		if(contador == nf){
+			cout<<endl<<endl;
+			for(int i = 0; i < nc; i++){
+				cout<<"---";
+			}
 		}
 		cout<<endl<<endl;
 		auxV = auxV->abajo;
 		if(auxV != NULL){
-			auxH = auxV->derecha;	
+			auxH = auxV->derecha;
+			contador++;
 		}
-		
 	}
+	
+	// Limpia el esapcio en memoria reservado para la matriz en memoria
+	
+	Nodo *pDel = (*cabecera);
+	Nodo *temp = NULL;
+	
+	auxV = (*cabecera)->abajo;
+	auxH = auxV->derecha;
+	
+	do{
+		while(pDel != NULL)
+		{
+		  temp = pDel->derecha;
+		  delete[] pDel;
+		  pDel = temp;
+		}
+		pDel = auxV;
+		auxV = auxV->abajo;
+	}while(auxV->abajo != NULL);
+	
+	system("pause");
 }
 
 void crearLista(int nf, int nc){
@@ -45,7 +81,7 @@ void crearLista(int nf, int nc){
 		}
 	}
 	
-	for(int i = 0; i < nf; i++){
+	for(int i = 0; i < nf * 2; i++){
 		Nodo *p = new Nodo();
 		p->valor = i + 1;
 		
@@ -108,7 +144,7 @@ void crearLista(int nf, int nc){
 		//cout<<endl;
 	}
 	
-	comenzarJuego(&cabecera);
+	comenzarJuego(&cabecera, nf, nc);
 	
 	/*auxV = cabecera->abajo;
 	auxH = auxV->derecha;
@@ -180,11 +216,12 @@ int main(int argc, char** argv) {
 				break;
 			case 2:
 				cout<<"\n\nGracias por jugar!"<<endl;
+				Sleep(2000);
 				break;
 			default:
 				cout<<"\n\nIngrese una opcion valida."<<endl;
+				Sleep(2000);
 				break;
 		}
-		system("pause");
 	}while(op != 2);
 }
