@@ -108,7 +108,6 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 				cin.ignore();
 				if(cordY > nf && cordY <= (nf*2)){
 					seleccionValida = true;
-					cordY += nf;
 				}else{
 					cout<<"Coordenada fuera de rango. Intente de nuevo."<<endl;
 				}
@@ -130,7 +129,11 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		}while(!seleccionValida);		
 	}
 	
-	system("cls");
+	//system("cls");
+	cout<<"COORDENADAS NAVES JUGADOR: "<<endl;
+	for( int i = 0; i < turnos; i++){
+		cout<<cordNaveJugadorY[i]<<","<<cordNaveJugadorX[i]<<endl;
+	}
 	cout<<"*************** INGRESO COORDENADAS DE ATAQUE A OPONENTE ***************"<<endl<<endl;
 
 	for( int i = 0; i < turnos; i++){
@@ -163,7 +166,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 			seleccionValida = false;
 			
 			for(int j = 0; j < turnos; j++){
-				if( j != i && (cordNaveJugadorX[j] == cordNaveJugadorX[i] && cordNaveJugadorY[j] == cordNaveJugadorY[i])){
+				if( j != i && (cordDispJugadorX[j] == cordDispJugadorX[i] && cordNaveJugadorY[j] == cordNaveJugadorY[i])){
 					seleccionValida = false;
 					cout<<endl<<endl<<"Esta coordenada ya existe. Elija otra por favor."<<endl<<endl;
 					break;
@@ -171,11 +174,19 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 				seleccionValida = true;
 			}
 			if(seleccionValida){
-				cordNaveJugadorX[i] = cordX;
-				cordNaveJugadorY[i] = cordY;
+				cordDispJugadorX[i] = cordX;
+				cordDispJugadorY[i] = cordY;
 			}
 		}while(!seleccionValida);
 	}
+	
+	
+	cout<<"COORDENADAS DISPAROS RIVAL: "<<endl;
+	for( int i = 0; i < turnos; i++){
+		cout<<cordDispJugadorY[i]<<","<<cordDispJugadorX[i]<<endl;
+	}
+	
+	system("pause");
 	
 	system("cls");
 	
@@ -192,8 +203,9 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 			if(auxH->cabecera){
 				cout<<" "<<auxH->valor<<" ";
 			}else{
-				//cout<<" \xDC ";
-				cout<<" "<<auxH->y<<","<<auxH->x<<" ";
+				cout<<" \xDC ";
+				//cout<<" "<<auxH->y<<","<<auxH->x<<" ";
+				//cout<<" "<<auxH->valor<<" ";
 			}
 				//cout<<" "<<auxH->y<<","<<auxH->x<<" ";
 				//cout<<" "<<auxH->valor<<" ";
@@ -203,7 +215,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		}
 		if(contador == nf){
 			cout<<endl<<endl;
-			for(int i = 0; i < nc; i++){
+			for(int i = 0; i <= nc; i++){
 				cout<<"---";
 			}
 		}
@@ -220,7 +232,6 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	auxV = (*cabecera)->abajo;
 	auxH = auxV->derecha;
 	
-	contador = 0;
 	while(auxV != NULL){
 		// Cambia el valor de los nodos para mostrar las SOLO LAS NAVES
 		while(auxH != NULL){
@@ -228,7 +239,8 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 			for( int i = 0; i < turnos; i++){
 				if(cordNaveEnemigoX[i] == auxH->x && cordNaveEnemigoY[i] == auxH->y){
 					auxH->valor = IDENTIFICADOR_NAVIO;
-				}else if(cordNaveJugadorX[i] == auxH->x && (cordNaveJugadorY[i]+nf) == auxH->y){
+				}
+				if(cordNaveJugadorX[i] == auxH->x && (cordNaveJugadorY[i]) == auxH->y){
 					auxH->valor = IDENTIFICADOR_NAVIO;
 				}
 			}
@@ -243,7 +255,6 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	auxV = (*cabecera)->abajo;
 	auxH = auxV->derecha;
 	
-	contador = 0;
 	while(auxV != NULL){
 		// Cambia el valor de los nodos para mostrar los DISPAROS
 		while(auxH != NULL){
@@ -257,7 +268,8 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 					}else{
 						auxH->valor = IDENTIFICADOR_DISPARO_FALLADO;
 					}
-				}else if(cordDispJugadorX[i] == auxH->x && cordDispJugadorY[i] == auxH->y){
+				}
+				if(cordDispJugadorX[i] == auxH->x && cordDispJugadorY[i] == auxH->y){
 					if(auxH->valor = IDENTIFICADOR_NAVIO){
 						auxH->valor = IDENTIFICADOR_NAVIO_DESTRUIDO;
 						aciertosJugador++;
@@ -274,30 +286,34 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		}
 	}
 	
-	auxV = (*cabecera);
-	auxH = auxV;
+	//auxV = (*cabecera);
+	//auxH = auxV;
+	auxV = (*cabecera)->abajo;
+	auxH = auxV->derecha;
 	
 	contador = 0;
 	while(auxV != NULL){
 		
 		while(auxH != NULL){
-			//if(auxH->valor == IDENTIFICADOR_VACIO){
-			if(auxH->cabecera){
-				cout<<" "<<auxH->valor<<" ";
-			}else if(auxH->valor == IDENTIFICADOR_VACIO){
-				cout<<" \xDC ";
-			}else if(auxH->valor == IDENTIFICADOR_NAVIO){
-				cout<<" o ";
-			}else if(auxH->valor == IDENTIFICADOR_NAVIO_DESTRUIDO){
-				cout<<" x ";
-			}else if(auxH->valor == IDENTIFICADOR_DISPARO_FALLADO){
-				cout<<" - ";
-			}
-				//cout<<" "<<auxH->y<<","<<auxH->x<<" ";
-				//cout<<" "<<auxH->valor<<" ";
-			//}
+			//if(auxH->cabecera){
+			//	cout<<" "<<auxH->valor<<" ";
+			//}else{
+				switch(auxH->valor){
+					case IDENTIFICADOR_VACIO:
+						cout<<" \xDC ";
+						break;
+					case IDENTIFICADOR_NAVIO:
+						cout<<" o ";
+						break;
+					case IDENTIFICADOR_NAVIO_DESTRUIDO:
+						cout<<" - ";
+						break;
+					case IDENTIFICADOR_DISPARO_FALLADO:
+						cout<<" x ";
+						break;
+				}
+			//}			
 			auxH = auxH->derecha;
-			//Sleep(100);
 		}
 		if(contador == nf){
 			cout<<endl<<endl;
@@ -307,7 +323,9 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		}
 		cout<<endl<<endl;
 		auxV = auxV->abajo;
-		auxH = auxV;
+		if(auxV != NULL){
+			auxH = auxV->derecha;	
+		}
 		contador++;
 	}
 	
@@ -444,14 +462,14 @@ int main(int argc, char** argv) {
 					cout<<"\nCuantas columnas desea? (minimo 5) [ ]\b\b";
 					cin>>noCol;
 					cin.ignore();
-				}while(noCol < 5);
+				}while(noCol < 3);
 				
 				do{
 					system("cls");
 					cout<<"\nCuantas filas desea? (minimo 5) [ ]\b\b";
 					cin>>noFil;
 					cin.ignore();
-				}while(noFil < 5);
+				}while(noFil < 3);
 				system("cls");
 				
 				crearLista(noFil, noCol);
