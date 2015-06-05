@@ -71,6 +71,35 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		cout<<cordDispEnemigoY[i]<<","<<cordDispEnemigoX[i]<<endl;
 	}
 	
+	// Imprime el tablero del juego.
+	
+	Nodo *auxV = (*cabecera);
+	Nodo *auxH = auxV;
+	
+	contador = 0;
+	while(auxV != NULL){
+		
+		while(auxH != NULL){
+			if(auxH->cabecera){
+				cout<<" "<<auxH->valor<<" ";
+			}else{
+				cout<<" \xDC ";
+			}
+			auxH = auxH->derecha;
+		}
+		if(contador == nf){
+			cout<<endl<<endl;
+			cout<<"   ";
+			for(int i = 0; i <= nc - 1; i++){
+				cout<<"---";
+			}
+		}
+		cout<<endl<<endl;
+		auxV = auxV->abajo;
+		auxH = auxV;
+		contador++;
+	}
+	
 	// Se eligen las coordenadas de los barcos y los disparos del jugador
 	
 	int cordNaveJugadorX [turnos];
@@ -190,43 +219,6 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	
 	system("cls");
 	
-	// Imprime el tablero del juego.
-	system("cls");
-	Nodo *auxV = (*cabecera);
-	Nodo *auxH = auxV;
-	
-	contador = 0;
-	while(auxV != NULL){
-		
-		while(auxH != NULL){
-			//if(auxH->valor == IDENTIFICADOR_VACIO){
-			if(auxH->cabecera){
-				cout<<" "<<auxH->valor<<" ";
-			}else{
-				cout<<" \xDC ";
-				//cout<<" "<<auxH->y<<","<<auxH->x<<" ";
-				//cout<<" "<<auxH->valor<<" ";
-			}
-				//cout<<" "<<auxH->y<<","<<auxH->x<<" ";
-				//cout<<" "<<auxH->valor<<" ";
-			//}
-			auxH = auxH->derecha;
-			//Sleep(100);
-		}
-		if(contador == nf){
-			cout<<endl<<endl;
-			for(int i = 0; i <= nc; i++){
-				cout<<"---";
-			}
-		}
-		cout<<endl<<endl;
-		auxV = auxV->abajo;
-		auxH = auxV;
-		contador++;
-	}
-	
-	system("pause");
-	
 	// Inicia con el recorrido de la matriz para cambiar el estado a los nodos coordenada seleccionados.
 	
 	auxV = (*cabecera)->abajo;
@@ -262,7 +254,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 			// Hace la suma de disparos acertados por cada jugador.
 			for( int i = 0; i < turnos; i++){
 				if(cordDispEnemigoX[i] == auxH->x && cordDispEnemigoY[i] == auxH->y){
-					if(auxH->valor = IDENTIFICADOR_NAVIO){
+					if(auxH->valor == IDENTIFICADOR_NAVIO){
 						auxH->valor = IDENTIFICADOR_NAVIO_DESTRUIDO;
 						aciertosRival++;
 					}else{
@@ -270,7 +262,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 					}
 				}
 				if(cordDispJugadorX[i] == auxH->x && cordDispJugadorY[i] == auxH->y){
-					if(auxH->valor = IDENTIFICADOR_NAVIO){
+					if(auxH->valor == IDENTIFICADOR_NAVIO){
 						auxH->valor = IDENTIFICADOR_NAVIO_DESTRUIDO;
 						aciertosJugador++;
 					}else{
@@ -295,29 +287,25 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	while(auxV != NULL){
 		
 		while(auxH != NULL){
-			//if(auxH->cabecera){
-			//	cout<<" "<<auxH->valor<<" ";
-			//}else{
-				switch(auxH->valor){
-					case IDENTIFICADOR_VACIO:
-						cout<<" \xDC ";
-						break;
-					case IDENTIFICADOR_NAVIO:
-						cout<<" o ";
-						break;
-					case IDENTIFICADOR_NAVIO_DESTRUIDO:
-						cout<<" - ";
-						break;
-					case IDENTIFICADOR_DISPARO_FALLADO:
-						cout<<" x ";
-						break;
-				}
-			//}			
+			switch(auxH->valor){
+				case IDENTIFICADOR_VACIO:
+					cout<<" \xDC ";
+					break;
+				case IDENTIFICADOR_NAVIO:
+					cout<<" o ";
+					break;
+				case IDENTIFICADOR_NAVIO_DESTRUIDO:
+					cout<<" x ";
+					break;
+				case IDENTIFICADOR_DISPARO_FALLADO:
+					cout<<" - ";
+					break;
+			}		
 			auxH = auxH->derecha;
 		}
-		if(contador == nf){
-			cout<<endl<<endl;
-			for(int i = 0; i < nc; i++){
+		if(contador == (nf - 1)){
+			cout<<endl<<endl<<"   ";
+			for(int i = 0; i < nc - 1; i++){
 				cout<<"---";
 			}
 		}
@@ -330,14 +318,12 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	}
 	
 	if(aciertosJugador > aciertosRival){
-		cout<<endl<<endl<<"******* JUGADOR HA GANADO *******";
+		cout<<endl<<endl<<"******* JUGADOR HA GANADO *******"<<endl<<endl;
 	}else if(aciertosJugador < aciertosRival){
-		cout<<endl<<endl<<"******* JUGADOR HA PERDIDO *******";
+		cout<<endl<<endl<<"******* JUGADOR HA PERDIDO *******"<<endl<<endl;
 	}else{
-		cout<<endl<<endl<<"******* ES UN EMPATE *******";
+		cout<<endl<<endl<<"******* ES UN EMPATE *******"<<endl<<endl;
 	}
-	
-	system("pause");
 	
 	// Limpia el esapcio en memoria reservado para la matriz en memoria
 	
