@@ -64,11 +64,11 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	
 	cout<<"COORDENADAS NAVES RIVAL: "<<endl;
 	for( int i = 0; i < turnos; i++){
-		cout<<cordNaveEnemigoY[i]<<","<<cordNaveEnemigoX[i]<<endl;
+		cout<<cordNaveEnemigoX[i]<<","<<cordNaveEnemigoY[i]<<endl;
 	}
 	cout<<"COORDENADAS DISPAROS RIVAL: "<<endl;
 	for( int i = 0; i < turnos; i++){
-		cout<<cordDispEnemigoY[i]<<","<<cordDispEnemigoX[i]<<endl;
+		cout<<cordDispEnemigoX[i]<<","<<cordDispEnemigoY[i]<<endl;
 	}
 	
 	// Imprime el tablero del juego.
@@ -159,10 +159,42 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	}
 	
 	//system("cls");
-	cout<<"COORDENADAS NAVES JUGADOR: "<<endl;
+	/*cout<<"COORDENADAS NAVES JUGADOR: "<<endl;
 	for( int i = 0; i < turnos; i++){
 		cout<<cordNaveJugadorY[i]<<","<<cordNaveJugadorX[i]<<endl;
+	}*/
+	
+	system("cls");
+	
+	// Imprime el tablero del juego.
+	
+	auxV = (*cabecera);
+	auxH = auxV;
+	
+	contador = 0;
+	while(auxV != NULL){
+		
+		while(auxH != NULL){
+			if(auxH->cabecera){
+				cout<<" "<<auxH->valor<<" ";
+			}else{
+				cout<<" \xDC ";
+			}
+			auxH = auxH->derecha;
+		}
+		if(contador == nf){
+			cout<<endl<<endl;
+			cout<<"   ";
+			for(int i = 0; i <= nc - 1; i++){
+				cout<<"---";
+			}
+		}
+		cout<<endl<<endl;
+		auxV = auxV->abajo;
+		auxH = auxV;
+		contador++;
 	}
+	
 	cout<<"*************** INGRESO COORDENADAS DE ATAQUE A OPONENTE ***************"<<endl<<endl;
 
 	for( int i = 0; i < turnos; i++){
@@ -210,12 +242,10 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	}
 	
 	
-	cout<<"COORDENADAS DISPAROS RIVAL: "<<endl;
+	/*cout<<"COORDENADAS DISPAROS RIVAL: "<<endl;
 	for( int i = 0; i < turnos; i++){
 		cout<<cordDispJugadorY[i]<<","<<cordDispJugadorX[i]<<endl;
-	}
-	
-	system("pause");
+	}*/
 	
 	system("cls");
 	
@@ -316,6 +346,10 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		}
 		contador++;
 	}
+	
+	cout<<endl<<"PUNTOS JUGADOR : "<<aciertosJugador<<endl<<"PUNTOS RIVAL : "<<aciertosRival<<endl;
+	
+	cout<<endl<<"x : Naves Destruidas"<<endl<<"o : Naves Intactas"<<endl<<"- : Disparos Fallados";
 	
 	if(aciertosJugador > aciertosRival){
 		cout<<endl<<endl<<"******* JUGADOR HA GANADO *******"<<endl<<endl;
@@ -445,14 +479,14 @@ int main(int argc, char** argv) {
 			case 1:
 				do{
 					system("cls");
-					cout<<"\nCuantas columnas desea? (minimo 5) [ ]\b\b";
+					cout<<"\nCuantas columnas desea? (minimo 3) [ ]\b\b";
 					cin>>noCol;
 					cin.ignore();
 				}while(noCol < 3);
 				
 				do{
 					system("cls");
-					cout<<"\nCuantas filas desea? (minimo 5) [ ]\b\b";
+					cout<<"\nCuantas filas desea? (minimo 3) [ ]\b\b";
 					cin>>noFil;
 					cin.ignore();
 				}while(noFil < 3);
